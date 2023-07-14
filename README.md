@@ -1,3 +1,3 @@
 # Portfolio
-JUST SLICING
 
+PORTFOLIO SLICING
