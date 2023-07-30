@@ -4,7 +4,7 @@
         <!-- Sidebar user panel -->
         <div class="user-panel">
             <div class="pull-left image">
-                <img src="dist/img/user2-160x160.jpg" class="img-circle" alt="User Image">
+                <img src="/images/user.jpg" class="img-circle" alt="User Image">
             </div>
             <div class="pull-left info">
                 <p>Mahyudin Akbar</p>
@@ -14,12 +14,12 @@
         <!-- sidebar menu: : style can be found in sidebar.less -->
         <ul class="sidebar-menu" data-widget="tree">
             <li class="header">MAIN NAVIGATION</li>
-            <li class="active treeview">
-                <a href="/">
+            <li class="<%= title == 'Dashboard' ? ' active' : ''  %>">
+                <a href="/admin">
                     <i class="fa fa-dashboard"></i> <span>Dashboard</span>
                 </a>
             </li>
-            <li>
+            <li class="<%= title == 'Post' ? ' active' : ''  %>">
                 <a href="/posts">
                     <i class="fa fa-file-text"></i> <span>My Post</span>
                 </a>
