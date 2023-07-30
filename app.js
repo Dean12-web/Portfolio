@@ -3,11 +3,21 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+var fileUpload = require('express-fileupload')
+var {Pool} = require('pg')
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
-var postsRouter = require('./routes/posts');
-var adminRouter = require('./routes/admin');
+const pool = new Pool({
+  user: 'Dean12',
+  host: 'localhost',
+  database: 'posdb',
+  password: '12345',
+  port: 5432
+})
+
+var indexRouter = require('./routes/index')(pool);
+var usersRouter = require('./routes/users')(pool);
+var postsRouter = require('./routes/posts')(pool);
+var adminRouter = require('./routes/admin')(pool);
 
 var app = express();
 
@@ -20,6 +30,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
+
+app.use(fileUpload())
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
