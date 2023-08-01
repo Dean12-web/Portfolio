@@ -4,7 +4,8 @@ CREATE TABLE users{
     email VARCHAR(100) NOT NULL,
     password VARCHAR(100) NOT NULL,
     dateofbirth DATE NOT NULL,
-    phone VARCHAR(100) NOT NULL
+    phone VARCHAR(100) NOT NULL.
+    address TEXT,
     AVATAR TEXT DEFAULT NULL
 }
 

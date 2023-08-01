@@ -3,6 +3,7 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+var flash = require('connect-flash')
 var fileUpload = require('express-fileupload')
 var session = require('express-session')
 const {Pool} = require('pg')
@@ -15,8 +16,8 @@ const pool = new Pool({
   port: 5432
 })
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+var indexRouter = require('./routes/index')(pool);
+var usersRouter = require('./routes/users')(pool);
 var postsRouter = require('./routes/posts');
 var adminRouter = require('./routes/admin')(pool);
 
@@ -33,6 +34,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.use(fileUpload())
+app.use(flash())
 app.use(session({
   secret: 'deanweb',
   resave:false,
