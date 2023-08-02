@@ -6,22 +6,68 @@ var { isLoggedIn } = require('../helpers/util')
 /* GET users listing. */
 module.exports = (pool) => {
 
-    router.get('/',isLoggedIn, async function (req, res, next) {
+    router.get('/', isLoggedIn, async function (req, res, next) {
         res.render('admin/post/index', { title: "Post", user: req.session.user })
     });
     router.get('/add', async function (req, res, next) {
         try {
-            const username = await pool.query(`SELECT * FROM users`)
-            res.render('admin/post/form', { title: "Post", header: "Form Add", user: req.session.user, username: username.rows })
+            res.render('admin/post/form', { title: "Post", header: "Form Add", info: req.flash('info'), user: req.session.user, data: {} })
         } catch (error) {
             console.log(error)
         }
     })
 
-    router.post('/add', async function (req, res, next) {
+    router.post('/add', isLoggedIn, async function (req, res, next) {
         try {
-            const { userid } = req.session.user
-            const { title, body, imageone } = req.body
+            const { userid } = req.session.user;
+            const { title, body } = req.body;
+            if (!req.files || Object.keys(req.files).length === 0) {
+                req.flash('info', 'Please Pick A Picture')
+                return res.redirect('/posts/add')
+            }
+            const sampleFile = req.files.imageone;
+            const fileName = `${Date.now()}-${sampleFile.name}`;
+            const uploadPath = path.join(__dirname, '..', 'public', 'images', fileName);
+    
+            sampleFile.mv(uploadPath, function (err) {
+                if (err) {
+                    console.log(err);
+                    return res.status(500).send(err);
+                }
+            });
+    
+            const sql = `INSERT INTO portfolios(title, body, imageone, userid) VALUES($1, $2, $3, $4)`;
+            const data = await pool.query(sql, [title, body, fileName, userid]);
+            console.log("Success ADD data", data.rows[0]);
+    
+            res.redirect('/posts');
+        } catch (error) {
+            console.log(error);
+        }
+    });
+    
+
+    router.get('/edit/:portfolioid', isLoggedIn, async (req, res, next) => {
+        try {
+            const { portfolioid } = req.params
+            const sql = `SELECT * FROM portfolios WHERE portfolioid = $1`;
+            const data = await pool.query(sql, [portfolioid])
+            res.render('admin/post/form', { title: "Post", header: "Form Edit", info: req.flash('info'), user: req.session.user, data: data.rows[0] })
+        } catch (error) {
+            console.log(error)
+        }
+    })
+
+    router.post('/edit/:portfolioid', isLoggedIn, async (req, res, next) => {
+        try {
+            const { portfolioid } = req.params
+            const { title, body } = req.body
+            if (!req.files || !req.files.picture) {
+                // No file was uploaded, proceed with updating other fields
+                await pool.query(`UPDATE portfolios SET title = $1, body=$2 WHERE portfolioid = $3`, [title, body, portfolioid]);
+                console.log('Data Goods Updated');
+                return res.redirect('/posts');
+            }
             const sampleFile = req.files.imageone;
             const fileName = `${Date.now()}-${sampleFile.name}`;
             const uploadPath = path.join(__dirname, '..', 'public', 'images', fileName);
@@ -31,15 +77,24 @@ module.exports = (pool) => {
                     return res.status(500).send(err)
                 }
             })
-            const sql = `INSERT INTO portfolios(title,body,imageone, userid) VALUES($1,$2,$3,$4)`
-            const data = await pool.query(sql, [title, body, fileName, userid])
-            console.log("Success ADD data", data.rows[0])
+            const sql = `UPDATE portfolios SET title = $1, body = $2, imageone = $3 WHERE portfolioid = $4`;
+            await pool.query(sql, [title, body, fileName, portfolioid])
             res.redirect('/posts')
         } catch (error) {
             console.log(error)
         }
     })
-
+    router.get('/delete/:portfolioid', async (req, res, next) => {
+        try {
+            const { portfolioid } = req.params
+            const sql = `DELETE FROM portfolios WHERE portfolioid = $1`
+            await pool.query(sql, [portfolioid])
+            console.log('Delete Portfolio Success')
+            res.redirect('/posts')
+        } catch (error) {
+            console.log(error)
+        }
+    })
     router.get('/datatable', async (req, res, next) => {
         let params = []
 
