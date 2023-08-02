@@ -13,6 +13,8 @@
     <link rel="stylesheet" href="/stylesheets/font-awesome/css/font-awesome.min.css">
     <!-- Ionicons -->
     <link rel="stylesheet" href="/stylesheets/Ionicons/css/ionicons.min.css">
+    <!-- DataTables -->
+    <link href="/stylesheets/dataTables.bootstrap4.min.css" rel="stylesheet">
     <!-- Theme style -->
     <link rel="stylesheet" href="/stylesheets/AdminLTE.min.css">
     <!-- AdminLTE Skins. Choose a skin from the css/skins folder instead of downloading all of them to reduce the load. -->
@@ -46,19 +48,29 @@
                         <!-- Default box -->
                         <div class="box">
                             <div class="box-header with-border">
-                                <a href="/posts/add" class="btn btn-primary btn-md">
-                                    <i class="fa fa-solid fa-plus"></i> 
+                                <a href="/posts/datatable" class="btn btn-primary btn-md">
+                                    <i class="fa fa-solid fa-plus"></i>
                                     <span class="text"> Add</span>
                                 </a>
                             </div>
                             <div class="box-body">
-                                Start creating your amazing application!
+                                <table class="table table-bordered" id="dataTable">
+                                    <thead>
+                                        <tr>
+                                            <th width="13%">Portfolio ID</th>
+                                            <th width="50%">Title</th>
+                                            <th width="5%">Actions</th>
+                                        </tr>
+                                    </thead>
+                                    <tfoot>
+                                        <tr>
+                                            <th width="13%">Portfolio ID</th>
+                                            <th>Title</th>
+                                            <th>Actions</th>
+                                        </tr>
+                                    </tfoot>
+                                </table>
                             </div>
-                            <!-- /.box-body -->
-                            <div class="box-footer">
-                                Footer
-                            </div>
-                            <!-- /.box-footer-->
                         </div>
                         <!-- /.box -->
 
@@ -70,13 +82,41 @@
                     <!-- Close Footer -->
     </div>
     <!-- jQuery 3 -->
-    <script src="/javascripts/jquery/dist/jquery.min.js"></script>
+    <script src="/javascripts/jquery.min.js"></script>
     <!-- Bootstrap 3.3.7 -->
     <script src="/stylesheets/bootstrap/dist/js/bootstrap.min.js"></script>
     <!-- Slimscroll -->
     <script src="/javascripts/jquery-slimscroll/jquery.slimscroll.min.js"></script>
     <!-- FastClick -->
     <script src="/javascripts/fastclick/lib/fastclick.js"></script>
+    <!-- DataTables -->
+    <script src="javascripts/datatables/jquery.dataTables.min.js"></script>
+    <script src="javascripts/datatables/dataTables.bootstrap4.min.js"></script>
+    <script>
+        $(document).ready(() => {
+            $('#dataTable').DataTable({
+                "lengthMenu": [[3, 10, 100], [3, 10, "All"]],
+                "processing": true,
+                "serverSide": true,
+                "ajax": "/posts/datatable",
+                "columns":[
+                    {"data": "portfolioid"},
+                    {"data": "title"},
+                    {"data": "portfolioid",
+                    render: (data)=>{  
+                        return `
+                        <a href="#" class="btn btn-circle btn-sm btn-success">
+                            <i class="fa fa-info"></i>
+                        </a>
+                        <a href="#" class="btn btn-circle btn-sm btn-danger">
+                            <i class="fa fa-trash"></i>
+                        </a>
+                        `
+                    }}
+                ]
+            })
+        })
+    </script>
 </body>
 
 </html>

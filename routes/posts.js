@@ -6,10 +6,9 @@ var { isLoggedIn } = require('../helpers/util')
 /* GET users listing. */
 module.exports = (pool) => {
 
-    router.get('/', isLoggedIn, function (req, res, next) {
+    router.get('/',isLoggedIn, async function (req, res, next) {
         res.render('admin/post/index', { title: "Post", user: req.session.user })
     });
-
     router.get('/add', async function (req, res, next) {
         try {
             const username = await pool.query(`SELECT * FROM users`)
@@ -39,6 +38,33 @@ module.exports = (pool) => {
         } catch (error) {
             console.log(error)
         }
+    })
+
+    router.get('/datatable', async (req, res, next) => {
+        let params = []
+
+        if (req.query.search.value) {
+            params.push(`title ilike '%${req.query.search.value}%'`)
+        }
+
+        const limit = req.query.length
+        const offset = req.query.start
+        const sortBy = req.query.columns[req.query.order[0].column].data
+        const sortMode = req.query.order[0].dir
+        const sqlData = `SELECT * FROM portfolios${params.length > 0 ? ` WHERE ${params.join(' OR ')}` : ''} ORDER BY ${sortBy} ${sortMode} limit ${limit} offset ${offset} `
+        const sqlTotal = `SELECT COUNT(*) as total FROM portfolios${params.length > 0 ? ` WHERE ${params.join(' OR ')}` : ''}`
+        const total = await pool.query(sqlTotal)
+        const data = await pool.query(sqlData)
+        console.log(total.rows[0].total)
+
+        const response = {
+            "draw": Number(req.query.draw),
+            "recordsTotal": total.rows[0].total,
+            "recordsFiltered": total.rows[0].total,
+            "data": data.rows
+        }
+
+        res.json(response)
     })
     return router;
 }
