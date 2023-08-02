@@ -20,7 +20,6 @@ module.exports = (pool) => {
       const { userid } = req.session.user
       const { username, email, dateofbirth, address, phone } = req.body
       const sampleFile = req.files.avatar;
-      console.log(sampleFile)
       const fileName = `${Date.now()}-${sampleFile.name}`;
       const uploadPath = path.join(__dirname, '..', 'public', 'images', fileName);
       sampleFile.mv(uploadPath, function (err) {

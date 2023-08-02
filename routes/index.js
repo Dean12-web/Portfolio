@@ -1,13 +1,18 @@
 var express = require('express');
 var router = express.Router();
 var bcrypt = require('bcrypt')
+var moment = require('moment')
 
 
 /* GET home page. */
 module.exports = (pool) => {
   router.get('/', async function (req, res, next) {
     try {
-      res.render('client/index', {user:req.session.username})
+      let sql = `SELECT * FROM users`
+      let data = await pool.query(sql)
+      let getAge = `SELECT EXTRACT(YEAR FROM AGE(NOW()::date, dateofbirth)) AS age FROM users`
+      let age = await pool.query(getAge)
+      res.render('client/index', {data:data.rows[0], moment, age:age.rows[0]})
     } catch (error) {
       res.json(error)
     }

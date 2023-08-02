@@ -46,19 +46,38 @@
                         <!-- Default box -->
                         <div class="box">
                             <div class="box-header with-border">
-                                <a href="/posts/add" class="btn btn-primary btn-md">
-                                    <i class="fa fa-solid fa-plus"></i> 
-                                    <span class="text"> Add</span>
-                                </a>
+                                <span class="text-primary">Form Add</span>
                             </div>
                             <div class="box-body">
-                                Start creating your amazing application!
+                                <form method="post" enctype="multipart/form-data">
+                                    <div class="box-body">
+                                        <div class="form-group">
+                                            <label for="title">Title</label>
+                                            <input type="text" class="form-control" id="title" name="title"
+                                                placeholder="Enter...">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="body">Body</label>
+                                            <textarea name="body" class="form-control" id="body" cols="30"
+                                                rows="10"></textarea>
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="Image">Image</label>
+                                            <input type="file" id="imageone" name="imageone">
+                                        </div>
+                                        <div class="form-group">
+                                            <label for="preview">Preview</label>
+                                            <br>
+                                            <img id="imagepreview" src="" style="height: 50%px; width: 50%;">
+                                        </div>
+                                    </div>
+                                    <!-- /.box-body -->
+
+                                    <div class="box-footer">
+                                        <button type="submit" class="btn btn-primary">Submit</button>
+                                    </div>
+                                </form>
                             </div>
-                            <!-- /.box-body -->
-                            <div class="box-footer">
-                                Footer
-                            </div>
-                            <!-- /.box-footer-->
                         </div>
                         <!-- /.box -->
 
@@ -77,6 +96,14 @@
     <script src="/javascripts/jquery-slimscroll/jquery.slimscroll.min.js"></script>
     <!-- FastClick -->
     <script src="/javascripts/fastclick/lib/fastclick.js"></script>
+    <script>
+        $('#imageone').change((e)=>{
+            const [files] = imageone.files
+            if(files){
+                imagepreview.src = URL.createObjectURL(files)
+            }
+        })
+    </script>
 </body>
 
 </html>
