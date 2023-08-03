@@ -64,7 +64,7 @@ module.exports = (pool) => {
             const { title, body,github } = req.body
             if (!req.files || !req.files.picture) {
                 // No file was uploaded, proceed with updating other fields
-                await pool.query(`UPDATE portfolios SET title = $1, github=$2 body=$3  WHERE portfolioid = $4`, [title,github, body, portfolioid]);
+                await pool.query(`UPDATE portfolios SET title = $1, github=$2,body=$3  WHERE portfolioid = $4`, [title,github, body, portfolioid]);
                 console.log('Data Goods Updated');
                 return res.redirect('/posts');
             }
@@ -77,7 +77,7 @@ module.exports = (pool) => {
                     return res.status(500).send(err)
                 }
             })
-            const sql = `UPDATE portfolios SET title = $1, github = $3 body = $4, imageone = $5 WHERE portfolioid = $6`;
+            const sql = `UPDATE portfolios SET title = $1, github = $2 body = $3, imageone = $4 WHERE portfolioid = $5`;
             await pool.query(sql, [title, github, body, fileName, portfolioid])
             res.redirect('/posts')
         } catch (error) {
