@@ -10,13 +10,27 @@ module.exports = (pool) => {
     try {
       let sql = `SELECT * FROM users`
       let data = await pool.query(sql)
+      let porto = await pool.query(`SELECT * FROM portfolios`)
+      let total = await pool.query(`SELECT COUNT(*) as total FROM portfolios`)
       let getAge = `SELECT EXTRACT(YEAR FROM AGE(NOW()::date, dateofbirth)) AS age FROM users`
       let age = await pool.query(getAge)
-      res.render('client/index', {data:data.rows[0], moment, age:age.rows[0]})
+      console.log(total.rows[0])
+      res.render('client/index', {data:data.rows[0], moment, age:age.rows[0], porto: porto.rows, total:total.rows[0]})
     } catch (error) {
       res.json(error)
     }
   });
+
+  router.get('/detail/:portfolioid',async function(req,res,next){
+    try {
+      const {portfolioid} = req.params
+      const porto = await pool.query(`SELECT * FROM portfolios WHERE portfolioid = $1`,[portfolioid])
+      const data = await pool.query(`SELECT * FROM users`)
+      res.render('client/portfolio/index', {data:data.rows[0], porto:porto.rows[0]})
+    } catch (error) {
+      console.log(error)
+    }
+  })
 
   router.get('/login', function (req, res, next) {
     res.render('login', { title: "Log in", info: req.flash('info') });

@@ -20,7 +20,7 @@ module.exports = (pool) => {
     router.post('/add', isLoggedIn, async function (req, res, next) {
         try {
             const { userid } = req.session.user;
-            const { title, body } = req.body;
+            const { title, body, github } = req.body;
             if (!req.files || Object.keys(req.files).length === 0) {
                 req.flash('info', 'Please Pick A Picture')
                 return res.redirect('/posts/add')
@@ -36,8 +36,8 @@ module.exports = (pool) => {
                 }
             });
     
-            const sql = `INSERT INTO portfolios(title, body, imageone, userid) VALUES($1, $2, $3, $4)`;
-            const data = await pool.query(sql, [title, body, fileName, userid]);
+            const sql = `INSERT INTO portfolios(title, github, body, imageone, userid) VALUES($1, $2, $3, $4, $5)`;
+            const data = await pool.query(sql, [title, github, body, fileName, userid]);
             console.log("Success ADD data", data.rows[0]);
     
             res.redirect('/posts');
@@ -61,10 +61,10 @@ module.exports = (pool) => {
     router.post('/edit/:portfolioid', isLoggedIn, async (req, res, next) => {
         try {
             const { portfolioid } = req.params
-            const { title, body } = req.body
+            const { title, body,github } = req.body
             if (!req.files || !req.files.picture) {
                 // No file was uploaded, proceed with updating other fields
-                await pool.query(`UPDATE portfolios SET title = $1, body=$2 WHERE portfolioid = $3`, [title, body, portfolioid]);
+                await pool.query(`UPDATE portfolios SET title = $1, github=$2 body=$3  WHERE portfolioid = $4`, [title,github, body, portfolioid]);
                 console.log('Data Goods Updated');
                 return res.redirect('/posts');
             }
@@ -77,8 +77,8 @@ module.exports = (pool) => {
                     return res.status(500).send(err)
                 }
             })
-            const sql = `UPDATE portfolios SET title = $1, body = $2, imageone = $3 WHERE portfolioid = $4`;
-            await pool.query(sql, [title, body, fileName, portfolioid])
+            const sql = `UPDATE portfolios SET title = $1, github = $3 body = $4, imageone = $5 WHERE portfolioid = $6`;
+            await pool.query(sql, [title, github, body, fileName, portfolioid])
             res.redirect('/posts')
         } catch (error) {
             console.log(error)

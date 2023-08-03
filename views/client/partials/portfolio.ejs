@@ -1,0 +1,13 @@
+<section class="portfolio" id="portfolio">
+    <h1 class="heading">My <span>Portfolio</span></h1>
+    <div class="box-container">
+        <% porto.forEach(item => { %>
+        <div class="box">
+            <a href="/detail/<%= item.portfolioid %>">
+                <img src="/images/<%= item.imageone %>" alt="">
+            </a>
+            
+        </div>
+        <% }) %>
+    </div>
+</section>

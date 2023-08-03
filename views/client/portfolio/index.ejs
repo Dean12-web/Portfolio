@@ -13,36 +13,35 @@
 
 <body>
     <!-- header section start -->
-    <%- include('./partials/header.ejs') %>
+    <header>
+        <div class="user">
+            <img src="/images/<%= data.avatar %>" alt="">
+            <h3 class="name"><%= data.username %></h3>
+            <p class="post">Web Developer</p>
+        </div>
+    
+        <nav class="navbar">
+            <ul>
+                <li><a href="/">home</a></li>
+                <li><a href="/">about</a></li>
+                <li><a href="/">education</a></li>
+                <li><a href="/">portofolio</a></li>
+                <li><a href="/">contact</a></li>
+            </ul>
+        </nav>
+    </header>
     <!-- header section end -->
 
     <div id="menu" class="fas fa-bars"></div>
 
     <!-- home section start -->
     <section class="home" id="home">
-        <h3>HI THERE !!</h3>
-        <h1>I'M <span><%= data.username %></span></h1>
-        <p>I am a highly motivated and hard-working individual and fast-learner person. I ﬁll my time by learning many things to increase my knowledge, such as reading books and participating in the bootcamp program at RUBICAMP.</p>
-        <a href="#about"><button class="btn">about me <i class="fas fa-user"></i></button></a>
+        <h3><%= porto.title %></h3>
+        <p><%= porto.body %></p>
+        <img src="/images/<%= porto.imageone %>" style="height: 50%; width: 70%;" alt="">
+        <a href="<%= porto.github %>" target="_blank"><button class="btn">Github <i class="fa-brands fa-github"></i></button></a>
     </section>
     <!-- home section end -->
-
-    <!-- about section start -->
-    <%- include('./partials/about.ejs') %>
-    <!-- about section end -->
-
-    <!-- education section start -->
-    <%- include('./partials/education.ejs') %>
-    <!-- education section end -->
-
-    <!-- portfolio section start -->
-    <%- include('./partials/portfolio.ejs') %>
-    <!-- portfolio section end -->
-
-    <!-- contact session start -->
-    <%- include('./partials/contact.ejs') %>
-    <!-- contact session end -->
-
     <!-- jquery cdn link -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"
         integrity="sha512-3gJwYpMe3QewGELv8k/BX9vcqhryRdzRMxVfq6ngyWXwo03GFEzjsUm8Q7RZcHPHksttq7/GFoxjCVUjkjvPdw=="
